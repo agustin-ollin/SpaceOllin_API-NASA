@@ -1,10 +1,18 @@
 package com.ollin.rocketollin
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.Window
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ollin.rocketollin.databinding.ActivityMainBinding
 import com.ollin.rocketollin.local_date.DatePickerFragment
@@ -20,6 +28,8 @@ import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    // Your API KEY -> generate here https://api.nasa.gov/
+    private val keyAPI = "DEMO_KEY"
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +49,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             btnLoad.setOnClickListener {
-                searchByDate("apod?api_key=DEMO_KEY&date=${fechaRegistroTextField.text.toString() ?: LocalDateTime.now()}")
+                showMessage("Wait a moment please!")
+                searchByDate("apod?api_key=$keyAPI&date=${fechaRegistroTextField.text.toString() ?: LocalDateTime.now()}")
             }
         }
     }
@@ -52,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             .build()
     }
 
+    @SuppressLint("WrongConstant")
     private fun searchByDate(query: String){
         CoroutineScope(Dispatchers.IO).launch {
             val call = getRetrofit().create(APIService::class.java).getImageByLocalDate("$query")
@@ -59,34 +71,36 @@ class MainActivity : AppCompatActivity() {
 
             runOnUiThread {
                 if (call.isSuccessful) {
-                    obj.let {
-                        with(binding){
-                            Picasso.get().load(obj!!.url).into(imagenShow)
+                    with(binding){
+                        showImage.visibility = View.VISIBLE
+                        titleImage.text = "${obj!!.title}"
+                        explanationImage.text = "${obj.explanation}"
+                        copyright.text = "By ${obj.copyright ?: "NASA"}"
 
-                            titleImage.text = "${obj.title}"
-
-                            imagenShow.setOnClickListener {
-                                showFullInfo(obj)
-                            }
+                        showImage.setOnClickListener {
+                            showImageFull(obj)
                         }
                     }
                 } else {
-                    showError()
+                    showMessage("An error has occurred!")
                 }
             }
         }
     }
 
-    private fun showFullInfo(obj: NasaResponse) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(obj.title)
-            .setMessage("${obj.explanation}\n\nBy ${obj.copyright ?: "NASA"}")
-            .setPositiveButton(resources.getString(R.string.close)){dialog, which ->
+    private fun showMessage(message: String) = Toast.makeText(this, "$message", Toast.LENGTH_LONG).show()
 
-            }.show()
+    private fun showImageFull(obj: NasaResponse) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this, R.style.fullscreenalert)
+        val view: View = layoutInflater.inflate(R.layout.full_alert_dialog, null)
+
+        val image: ImageView = view.findViewById(R.id.imageViewNasa)
+        Picasso.get().load(obj.url).error(R.drawable.error).into(image)
+
+        builder.setView(view)
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
-
-    private fun showError() = Toast.makeText(this, "Ha ocurrido un error", Toast.LENGTH_SHORT).show()
 
     /**
      * Función para mostrar cuadro de fecha
@@ -102,7 +116,7 @@ class MainActivity : AppCompatActivity() {
      */
     fun onDateSelected(day: Int, month: Int, year: Int) {
         val dia: String = if (day < 10) "0$day" else "$day"
-        val mes: String = if (month < 10) "0$month" else "$month"
+        val mes: String = if (month < 9) "0${month + 1}" else "${month + 1}"
 
         binding.fechaRegistroTextField.setText("$year-$mes-$dia")
     }

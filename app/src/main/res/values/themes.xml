@@ -47,6 +47,16 @@
         <item name="editTextStyle">@style/Widget.Material3.TextInputEditText.OutlinedBox</item>
     </style>
 
+    <style name="fullscreenalert" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
     <color name="shrine_pink_100">#A05650</color>
     <color name="shrine_pink_900">#DA9B96</color>
     <color name="shrine_red">#A31E14</color>

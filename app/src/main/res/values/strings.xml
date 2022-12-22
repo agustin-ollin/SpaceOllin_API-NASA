@@ -3,4 +3,6 @@
 
     <string name="dateSearch">Date to search</string>
     <string name="close">Close</string>
+    <string name="titleView">Astronomy Picture of the Day</string>
+    <string name="textShow">Click to Show Image!</string>
 </resources>
