@@ -1,19 +1,19 @@
 package com.ollin.rocketollin
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.Context
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.Window
+import android.view.ViewTreeObserver
+import android.view.animation.AnticipateInterpolator
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ollin.rocketollin.databinding.ActivityMainBinding
 import com.ollin.rocketollin.local_date.DatePickerFragment
 import com.ollin.rocketollin.models.APIService
@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     // Your API KEY -> generate here https://api.nasa.gov/
     private val keyAPI = "DEMO_KEY"
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

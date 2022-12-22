@@ -57,6 +57,13 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/iconnasa_big</item>
+        <item name="windowSplashScreenAnimationDuration">300</item>
+        <item name="postSplashScreenTheme">@style/Theme.RocketOllin</item>
+    </style>
+
     <color name="shrine_pink_100">#A05650</color>
     <color name="shrine_pink_900">#DA9B96</color>
     <color name="shrine_red">#A31E14</color>
